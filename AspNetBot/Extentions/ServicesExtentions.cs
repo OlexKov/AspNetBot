@@ -11,6 +11,7 @@ namespace AspNetBot.Extentions
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IBotUserService, BotUserService>();
+            services.AddScoped<IImageService, ImageService>();
         } 
     }
 }

@@ -1,4 +1,6 @@
 ﻿using AspNetBot.Helpers;
+using AspNetBot.Interafces;
+using AspNetBot.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
@@ -12,6 +14,8 @@ namespace AspNetBot.Extentions
         public static void AddJwtServices(this IServiceCollection services, IConfiguration configuration)
         {
             var jwtOpts = configuration.GetSection(nameof(JwtOptions)).Get<JwtOptions>()!;
+
+            services.AddScoped<IJwtService, JwtService>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(o =>
