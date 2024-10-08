@@ -1,5 +1,6 @@
 ﻿using AspNetBot.Entities;
 using AspNetBot.Helpers;
+using AspNetBot.Interafces;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
@@ -39,7 +40,7 @@ namespace AspNetBot.Services
                 {
                     case MessageType.Text:
                         DebugConsole.Write("Bot", ConsoleColor.Green);
-                        DebugConsole.WriteLine($": User - {message.Chat.Username} send \"{message.Text}\"", ConsoleColor.Yellow);
+                        DebugConsole.WriteLine($":  User - {message.Chat.Username} send \"{message.Text}\"", ConsoleColor.Yellow);
                         if (message.Text is not null)
                         {
                             var messageText = message.Text;
@@ -67,7 +68,7 @@ namespace AspNetBot.Services
 
         public async Task SendMessages(IEnumerable<BotUser> users)
         {
-            DebugConsole.WriteLine("Messsages sended", ConsoleColor.Blue);
+            DebugConsole.WriteLine($"Messages sended", ConsoleColor.Blue);
         }
     }
 }

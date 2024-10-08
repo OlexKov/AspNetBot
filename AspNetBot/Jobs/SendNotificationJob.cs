@@ -18,7 +18,7 @@ namespace AspNetBot.Jobs
         public async Task Execute(IJobExecutionContext context)
         {
             var users = await userService.getForNotification();
-            await bot.SendMessages(users);  // Логіка для надсилання повідомлень
+            await bot.SendMessages(users); 
         }
     }
 }

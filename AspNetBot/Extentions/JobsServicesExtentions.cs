@@ -10,7 +10,7 @@ namespace AspNetBot.Extentions
         {
             var jobSchedules = new List<JobSchedule>
             {
-                 new(typeof(SendNotificationJob), "NotificationJob", "NotificationTrigger", "0 30 17 * * ?")
+                 new(typeof(SendNotificationJob), "NotificationJob", "NotificationTrigger", "0/5 * * ? * * *")
                 // ... more jobs
             };
 

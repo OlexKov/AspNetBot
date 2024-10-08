@@ -16,7 +16,7 @@ builder.Services.AddJwtServices(builder.Configuration);
 
 builder.Services.AddServices();
 
-builder.Services.AddHostedService<TelegarmBotService>();
+builder.Services.AddChatBoot(builder.Configuration);
 
 builder.Services.AddControllers();
 

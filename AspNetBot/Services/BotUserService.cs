@@ -7,10 +7,7 @@ namespace AspNetBot.Services
     {
         public Task<IEnumerable<BotUser>> getForNotification()
         {
-            return new Task<IEnumerable<BotUser>>(() => 
-            {
-                return [];
-            });
+            return Task.Run(IEnumerable<BotUser> () => []);
         }
     }
 }
