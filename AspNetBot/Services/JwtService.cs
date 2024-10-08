@@ -9,7 +9,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
-using Telegram.Bot.Types;
 
 namespace AspNetBot.Services
 {

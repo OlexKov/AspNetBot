@@ -30,7 +30,7 @@ var app = builder.Build();
 
 app.UseCors("AllowOrigins");
 
-app.SeedData().Wait();
+app.SeedData(builder.Configuration).Wait();
 
 if (app.Environment.IsDevelopment())
 {
