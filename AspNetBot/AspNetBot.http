@@ -1,0 +1,6 @@
+@AspNetBot_HostAddress = http://localhost:5230
+
+GET {{AspNetBot_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
