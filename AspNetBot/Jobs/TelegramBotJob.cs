@@ -9,6 +9,7 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
+
 namespace AspNetBot.Jobs
 {
     public class TelegramBotJob : IJob
@@ -16,16 +17,19 @@ namespace AspNetBot.Jobs
         private readonly IBotUserService userService;
         private readonly IProfessionsService professionsService;
         private readonly string botToken;
+        private readonly TelegramBotClient client;
         public TelegramBotJob(IConfiguration config, IBotUserService userService,IProfessionsService professionsService) 
         {
+            
             this.professionsService = professionsService;
             this.userService = userService;
             botToken = config["TelegramBotToken"]!;
+            client = new TelegramBotClient(botToken);
         }
         public async Task Execute(IJobExecutionContext context)
         {
             var receiverOptions = new ReceiverOptions { AllowedUpdates = [] };
-            new TelegramBotClient(botToken).StartReceiving(
+             client.StartReceiving(
                updateHandler: HandleUpdateAsync,
                pollingErrorHandler: HandleErrorAsync,
                receiverOptions: receiverOptions,
@@ -36,8 +40,38 @@ namespace AspNetBot.Jobs
         private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             var message = update.Message;
+            var callbackQuery = update.CallbackQuery;
+            if (callbackQuery != null)
+            {
+                var chatId = callbackQuery.From.Id;
+                if (int.TryParse(callbackQuery.Data, out int professionId))
+                {
+                    if (callbackQuery.Message != null) 
+                    {
+                        int messageId = callbackQuery.Message.MessageId;
+                        var user = await userService.setUserProfession(chatId, professionId);
+                        await botClient.EditMessageReplyMarkupAsync(
+                                           chatId: chatId,
+                                           messageId: messageId,
+                                           replyMarkup: null);
+                        await botClient.EditMessageTextAsync(chatId: chatId,
+                                            messageId: messageId, $"Ваша професія - {user.ProfessionName}");
+                    }
+                }
+                else
+                {
+                     switch(callbackQuery.Data)
+                    {
+                        default:
+                            break;
+                    };
+                }
+            }
+
             if (message is not null)
             {
+                var chatId = message.Chat.Id;
+               
                 switch (message.Type)
                 {
                     case MessageType.Text:
@@ -46,7 +80,6 @@ namespace AspNetBot.Jobs
                         if (message.Text is not null)
                         {
                             var messageText = message.Text;
-                            var chatId = message.Chat.Id;
                             switch (messageText)
                             {
                                 case "/start":
@@ -85,7 +118,6 @@ namespace AspNetBot.Jobs
                     case MessageType.Contact:
                         if (message.Contact is not null)
                         {
-                            var chatId = message.Chat.Id;
                             if (!await isUserExist(chatId))
                             {
                                 var contact = message.Contact;
@@ -96,8 +128,8 @@ namespace AspNetBot.Jobs
                                     cancellationToken: cancellationToken);
                                 if (userPhotos.TotalCount > 0)
                                 {
-                                    var largestPhoto = userPhotos.Photos[0][^1];
-                                    var file = await botClient.GetFileAsync(largestPhoto.FileId);
+                                    var fileId = userPhotos.Photos[0][^1].FileId;
+                                    var file = await botClient.GetFileAsync(fileId, cancellationToken: cancellationToken);
                                     userPhotoUrl = $"https://api.telegram.org/file/bot{botToken}/{file.FilePath}";
                                 }
                                 var newBotUser = new BotUserCreationModel()
@@ -111,11 +143,16 @@ namespace AspNetBot.Jobs
                                 };
                                 await userService.set(newBotUser);
                                 var professions = await professionsService.GetAll(false);
-                                var inlineButtons = professions.AsParallel().Select(x=> InlineKeyboardButton.WithCallbackData(text: x.Name, callbackData: x.Id.ToString())).ToArray();
+                                var inlineButtons = professions
+                                    .Select(x => InlineKeyboardButton.WithCallbackData(text: x.Name, callbackData: x.Id.ToString()))
+                                    .Select((button, index) => new { Button = button, Index = index })
+                                    .GroupBy(x => x.Index / 2)
+                                    .Select(g => g.Select(x => x.Button).ToArray())
+                                    .ToArray();
                                 var inlineKeyboard = new InlineKeyboardMarkup(inlineButtons);
                                 await botClient.SendTextMessageAsync(
                                             chatId,
-                                            "Оберіть професію:",
+                                            "Оберіть професію",
                                             replyMarkup: inlineKeyboard,
                                             cancellationToken: cancellationToken);
                             }

@@ -69,5 +69,13 @@ namespace AspNetBot.Services
 
         public  async Task<BotUserDto> getById(string botUserId, bool tracking) => mapper.Map<BotUserDto>(await userRepo.GetItemBySpec(new BotUserSpecs.GetById(botUserId, tracking)));
 
+        public async Task<BotUserDto> setUserProfession(long userCatId, int professionId)
+        {
+            var botUser = await userRepo.GetItemBySpec(new BotUserSpecs.GetByChatId(userCatId)) ??
+               throw new HttpException("Invalid user chat  id", HttpStatusCode.BadRequest);
+            botUser.ProfessionId = professionId;
+            await userRepo.SaveAsync();
+            return mapper.Map<BotUserDto>(botUser);
+        }
     }
 }

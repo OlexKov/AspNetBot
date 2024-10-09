@@ -15,6 +15,7 @@ namespace AspNetBot.Interafces
         Task delete(string botUserId);
         Task delete(BotUser botUser);
         Task set(BotUserCreationModel model);
+        Task<BotUserDto> setUserProfession(long userCatId,int professionId);
        
     }
 }
