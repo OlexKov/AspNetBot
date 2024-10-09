@@ -110,8 +110,14 @@ namespace AspNetBot.Jobs
                                     PhoneNumber = phoneNumber
                                 };
                                 await userService.set(newBotUser);
-                                var professions = professionsService.GetAll(false);
-
+                                var professions = await professionsService.GetAll(false);
+                                var inlineButtons = professions.AsParallel().Select(x=> InlineKeyboardButton.WithCallbackData(text: x.Name, callbackData: x.Id.ToString())).ToArray();
+                                var inlineKeyboard = new InlineKeyboardMarkup(inlineButtons);
+                                await botClient.SendTextMessageAsync(
+                                            chatId,
+                                            "Оберіть професію:",
+                                            replyMarkup: inlineKeyboard,
+                                            cancellationToken: cancellationToken);
                             }
                         }
                         break;
