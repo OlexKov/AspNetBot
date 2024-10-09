@@ -3,7 +3,6 @@ using AspNetBot.Entities;
 using AspNetBot.Mappers.Actions;
 using AspNetBot.Models;
 using AutoMapper;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 namespace AspNetBot.Mappers
 {

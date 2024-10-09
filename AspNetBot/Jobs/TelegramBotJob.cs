@@ -15,23 +15,20 @@ namespace AspNetBot.Jobs
     {
         private readonly IBotUserService userService;
         private readonly string botToken;
-        private readonly ITelegramBotClient client;
         public TelegramBotJob(IConfiguration config, IBotUserService userService) 
         {
             this.userService = userService;
-            this.botToken = config["TelegramBotToken"]!;
-            this.client  = new TelegramBotClient(botToken);
+            botToken = config["TelegramBotToken"]!;
         }
         public async Task Execute(IJobExecutionContext context)
         {
             var receiverOptions = new ReceiverOptions { AllowedUpdates = [] };
-            client.StartReceiving(
+            new TelegramBotClient(botToken).StartReceiving(
                updateHandler: HandleUpdateAsync,
                pollingErrorHandler: HandleErrorAsync,
                receiverOptions: receiverOptions,
                cancellationToken: context.CancellationToken
-           );
-
+            );
             await Task.Delay(Timeout.Infinite, context.CancellationToken);
         }
         private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
@@ -70,7 +67,7 @@ namespace AspNetBot.Jobs
                                     {
                                         await botClient.SendTextMessageAsync(
                                             chatId,
-                                            $"Вітаємо: {message.Chat.FirstName} {message.Chat.LastName} ! ! !",
+                                            $"Вітаємо: {message.Chat.FirstName} {message.Chat.LastName} !!!",
                                             cancellationToken: cancellationToken);
                                     }
                                     break;
@@ -131,7 +128,6 @@ namespace AspNetBot.Jobs
             DebugConsole.WriteLine(errorMessage, ConsoleColor.Red);
             return Task.CompletedTask;
         }
-
         public async Task<bool> isUserExist(long id) => await userService.getByChatId(id) != null;
     }
 }
