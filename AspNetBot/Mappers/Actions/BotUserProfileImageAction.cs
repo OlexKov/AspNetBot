@@ -7,7 +7,7 @@ namespace AspNetBot.Mappers.Actions
 {
     public class BotUserProfileImageAction(IImageService imageService) : IMappingAction<BotUserCreationModel, BotUser>
     {
-        private readonly IImageService imageService = imageService;
+        //private readonly IImageService imageService = imageService;
         public async void Process(BotUserCreationModel source, BotUser destination, ResolutionContext context)
         {
             if (source.ImageFile is not null)
