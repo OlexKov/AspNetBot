@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 using System.Text;
 
 namespace AspNetBot.Extentions
@@ -44,10 +45,12 @@ namespace AspNetBot.Extentions
                       .RequireAuthenticatedUser().Build();
             });
 
-
+            var assemblyName = Assembly.GetExecutingAssembly().GetName().Name;
 
             services.AddSwaggerGen(setup =>
             {
+                var fileDoc = Path.Combine(AppContext.BaseDirectory, $"{assemblyName}.xml");
+                setup.IncludeXmlComments(fileDoc);
                 // Include 'SecurityScheme' to use JWT Authentication
                 var jwtSecurityScheme = new OpenApiSecurityScheme
                 {

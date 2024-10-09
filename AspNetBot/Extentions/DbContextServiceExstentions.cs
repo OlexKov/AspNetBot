@@ -17,7 +17,12 @@ namespace AspNetBot.Extentions
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddIdentity<BotUser, IdentityRole>(options =>
             {
-                options.SignIn.RequireConfirmedAccount = false;
+                options.Stores.MaxLengthForKeys = 128;
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 5;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
             })
                .AddDefaultTokenProviders()
                .AddEntityFrameworkStores<BotDbContext>();
