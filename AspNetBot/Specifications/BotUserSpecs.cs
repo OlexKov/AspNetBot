@@ -20,8 +20,7 @@ namespace AspNetBot.Specifications
         {
             public GetAll(bool tracking = true)
             {
-                Query.Include(x => x.Profession);
-                if (!tracking) Query.AsNoTracking();
+                Query.Include(x => x.Profession).AsTracking(tracking);
             }
         }
 
@@ -29,8 +28,7 @@ namespace AspNetBot.Specifications
         {
             private GetByProfession(bool tracking = true)
             {
-                Query.Include(x => x.Profession);
-                if (!tracking) Query.AsNoTracking();
+                Query.Include(x => x.Profession).AsTracking(tracking);
             }
             public GetByProfession(int professionId,bool tracking = true):this(tracking)
             {
@@ -46,8 +44,7 @@ namespace AspNetBot.Specifications
         {
             private GetById(bool tracking = true)
             {
-                Query.Include(x => x.Profession);
-                if (!tracking) Query.AsNoTracking();
+                Query.Include(x => x.Profession).AsTracking(tracking);
             }
             public GetById(long id, bool tracking = true) : this(tracking)
             {

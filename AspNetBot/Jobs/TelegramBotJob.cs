@@ -14,9 +14,11 @@ namespace AspNetBot.Jobs
     public class TelegramBotJob : IJob
     {
         private readonly IBotUserService userService;
+        private readonly IProfessionsService professionsService;
         private readonly string botToken;
-        public TelegramBotJob(IConfiguration config, IBotUserService userService) 
+        public TelegramBotJob(IConfiguration config, IBotUserService userService,IProfessionsService professionsService) 
         {
+            this.professionsService = professionsService;
             this.userService = userService;
             botToken = config["TelegramBotToken"]!;
         }
@@ -108,6 +110,8 @@ namespace AspNetBot.Jobs
                                     PhoneNumber = phoneNumber
                                 };
                                 await userService.set(newBotUser);
+                                var professions = professionsService.GetAll(false);
+
                             }
                         }
                         break;
