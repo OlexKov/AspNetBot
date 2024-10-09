@@ -20,7 +20,7 @@ namespace AspNetBot.Repositories
 
         public virtual async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> exp) => await dbSet.AnyAsync(exp);
         public virtual async Task<TEntity?> GetByIDAsync(object id) => await dbSet.FindAsync(id);
-        public async virtual Task InsertAsync(TEntity entity) => await dbSet.AddAsync(entity);
+        public async virtual Task AddAsync(TEntity entity) => await dbSet.AddAsync(entity);
         public async virtual Task<bool> AnyAsync() => await dbSet.AnyAsync();
         public async virtual Task AddRangeAsync(IEnumerable<TEntity> entities) => await dbSet.AddRangeAsync(entities);
         public virtual void Delete(object id)

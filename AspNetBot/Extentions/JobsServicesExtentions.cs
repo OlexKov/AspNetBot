@@ -10,12 +10,19 @@ namespace AspNetBot.Extentions
         {
             var jobSchedules = new List<JobSchedule>
             {
-                 new(typeof(SendNotificationJob), "NotificationJob", "NotificationTrigger", "0/5 * * ? * * *")
+                 new(typeof(SendTeachersDayNotificationJob), "TeachersDayNotificationJob", "SendTeachersDayNotificationJobTrigger", "0 50 * ? * * *")
                 // ... more jobs
             };
 
             services.AddQuartz(q =>
             {
+                q.AddJob<TelegramBotJob>(opts => opts.WithIdentity("TelegramBotJob"));
+                q.AddTrigger(opts => opts
+                    .ForJob("TelegramBotJob")
+                    .WithIdentity("TelegramBotJobTrigger")
+                    .StartNow()
+                    .WithSimpleSchedule(x => x.WithRepeatCount(0)));
+
                 foreach (var schedule in jobSchedules)
                 {
                     q.AddJob(schedule.JobType,configure:opts => opts.WithIdentity(schedule.JobIdentity));

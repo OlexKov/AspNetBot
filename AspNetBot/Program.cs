@@ -16,8 +16,6 @@ builder.Services.AddJwtServices(builder.Configuration);
 
 builder.Services.AddServices();
 
-builder.Services.AddChatBoot(builder.Configuration);
-
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();

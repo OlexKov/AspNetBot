@@ -9,12 +9,10 @@ namespace AspNetBot.EntitiesConfigs
         public void Configure(EntityTypeBuilder<BotUser> builder) 
         {
             builder.HasKey(x => x.Id);
-            builder.HasMany(x => x.Images)
-                .WithOne(x => x.BotUser)
-                .HasForeignKey(x => x.BotUserId);
             builder.HasOne(x => x.Profession)
                 .WithMany(x => x.Users)
-                .HasForeignKey(x => x.ProfessionId);
+                .HasForeignKey(x => x.ProfessionId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

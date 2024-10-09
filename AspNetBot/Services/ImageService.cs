@@ -11,19 +11,12 @@ namespace AspNetBot.Services
 {
     public class ImageService :IImageService
     {
-        private readonly IMapper mapper;
         private readonly IConfiguration config;
-        private readonly IRepository<BotUserImage> images;
         private readonly string imgPath;
 
-        public ImageService(IWebHostEnvironment env,
-            IMapper mapper,
-            IConfiguration config,
-            IRepository<BotUserImage> images)
+        public ImageService(IWebHostEnvironment env,IConfiguration config)
         {
-            this.mapper = mapper;
             this.config = config;
-            this.images = images;
             imgPath = Path.Combine(env.WebRootPath, config["UserImgDir"] ?? string.Empty);
             if (!Directory.Exists(imgPath))
             { 

@@ -30,10 +30,6 @@ namespace AspNetBot.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
-                    b.Property<string>("ChatUserName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("text");
@@ -46,6 +42,9 @@ namespace AspNetBot.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("FirstName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Image")
                         .HasColumnType("text");
 
                     b.Property<string>("LastName")
@@ -74,7 +73,7 @@ namespace AspNetBot.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("ProfessionId")
+                    b.Property<int?>("ProfessionId")
                         .HasColumnType("integer");
 
                     b.Property<string>("SecurityStamp")
@@ -83,7 +82,7 @@ namespace AspNetBot.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
 
-                    b.Property<long>("UserId")
+                    b.Property<long?>("UserId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("UserName")
@@ -102,29 +101,6 @@ namespace AspNetBot.Migrations
                     b.HasIndex("ProfessionId");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("AspNetBot.Entities.BotUserImage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("BotUserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BotUserId");
-
-                    b.ToTable("BotUserImage");
                 });
 
             modelBuilder.Entity("AspNetBot.Entities.Profession", b =>
@@ -281,21 +257,9 @@ namespace AspNetBot.Migrations
                     b.HasOne("AspNetBot.Entities.Profession", "Profession")
                         .WithMany("Users")
                         .HasForeignKey("ProfessionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Profession");
-                });
-
-            modelBuilder.Entity("AspNetBot.Entities.BotUserImage", b =>
-                {
-                    b.HasOne("AspNetBot.Entities.BotUser", "BotUser")
-                        .WithMany("Images")
-                        .HasForeignKey("BotUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("BotUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -347,11 +311,6 @@ namespace AspNetBot.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("AspNetBot.Entities.BotUser", b =>
-                {
-                    b.Navigation("Images");
                 });
 
             modelBuilder.Entity("AspNetBot.Entities.Profession", b =>
