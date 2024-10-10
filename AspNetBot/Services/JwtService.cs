@@ -20,15 +20,15 @@ namespace AspNetBot.Services
 
         public async Task<IEnumerable<Claim>> GetClaimsAsync(BotUser user)
         {
-            var rolesJson = JsonConvert.SerializeObject(await userManager.GetRolesAsync(user));
             var claims = new List<Claim>
             {
-                new (ClaimTypes.NameIdentifier, user.Id),
+                new (ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new (ClaimTypes.Surname, user.LastName??""),
                 new (ClaimTypes.Name, user.FirstName??""),
                 new (ClaimTypes.HomePhone, user.PhoneNumber??""),
-                new (ClaimTypes.Role,rolesJson)
             };
+            var roles = await userManager.GetRolesAsync(user);
+            claims.AddRange(roles.Select(role => new Claim(ClaimsIdentity.DefaultRoleClaimType, role)));
             return claims;
         }
 

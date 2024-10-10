@@ -13,6 +13,7 @@ namespace AspNetBot.Extentions
             services.AddScoped<IBotUserService, BotUserService>();
             services.AddScoped<IImageService, ImageService>();
             services.AddScoped<IProfessionsService, ProfessionsService>();
+            services.AddScoped<IAccountService, AccountService>();
         } 
     }
 }

@@ -10,7 +10,7 @@ namespace AspNetBot.Specifications
         {
             public GetByChatId(long chatId, bool tracking = true)
             {
-                Query.Where(x => x.UserId == chatId)
+                Query.Where(x => x.ChatId == chatId)
                 .Include(x => x.Profession);
                 if (!tracking) Query.AsNoTracking();
             } 
@@ -48,9 +48,9 @@ namespace AspNetBot.Specifications
             }
             public GetById(long id, bool tracking = true) : this(tracking)
             {
-                Query.Where(x => x.UserId == id);
+                Query.Where(x => x.ChatId == id);
             }
-            public GetById(string id, bool tracking = true) : this(tracking)
+            public GetById(int id, bool tracking = true) : this(tracking)
             {
                 Query.Where(x => x.Id == id);
             }

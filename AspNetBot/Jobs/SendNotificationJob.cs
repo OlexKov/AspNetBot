@@ -20,10 +20,10 @@ namespace AspNetBot.Jobs
             var dataMap = context.JobDetail.JobDataMap;
             var profession = dataMap.GetString("profession");
             var message = dataMap.GetString("message");
-            var users = await userService.getAllByProfession(profession);
+            var users = await userService.GetAllByProfessionAsync(profession);
             foreach (var user in users.AsParallel())
             {
-                await client.SendTextMessageAsync(user.UserId, $"{user.FirstName} {user.LastName} {message}");
+                await client.SendTextMessageAsync(user.ChatId, $"{user.FirstName} {user.LastName} {message}");
             }
         }
     }

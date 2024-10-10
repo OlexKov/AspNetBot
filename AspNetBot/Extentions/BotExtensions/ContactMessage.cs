@@ -27,17 +27,17 @@ namespace AspNetBot.Extentions.TBotExtensions
                         var file = await botClient.GetFileAsync(fileId, cancellationToken: cancellationToken);
                         userPhotoUrl = $"https://api.telegram.org/file/bot{bot.BotToken}/{file.FilePath}";
                     }
-                    var newBotUser = new BotUserCreationModel()
+                    var newBotUser = new UserCreationModel()
                     {
                         FirstName = contact.FirstName,
                         LastName = contact.LastName,
                         UserName = message.Chat.Username,
-                        UserId = chatId,
+                        ChatId = chatId,
                         ImageUrl = userPhotoUrl,
                         PhoneNumber = phoneNumber
                     };
-                    await bot.UserService.set(newBotUser);
-                    var professions = await bot.ProfessionsService.GetAll(false);
+                    await bot.AccountService.SetAsync(newBotUser);
+                    var professions = await bot.ProfessionsService.GetAllAsync(false);
 
                     //await botClient.EditMessageReplyMarkupAsync(
                     //    chatId: chatId, 

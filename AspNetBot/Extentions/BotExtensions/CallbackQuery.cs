@@ -17,7 +17,7 @@ namespace AspNetBot.Extentions.TBotExtensions
                     if (callbackQuery.Message != null)
                     {
                         int messageId = callbackQuery.Message.MessageId;
-                        var user = await bot.UserService.setUserProfession(chatId, professionId);
+                        var user = await bot.UserService.SetUserProfessionAsync(chatId, professionId);
                         await botClient.EditMessageReplyMarkupAsync(chatId: chatId, messageId: messageId, replyMarkup: null, cancellationToken: cancellationToken);
                         await botClient.EditMessageTextAsync(chatId: chatId, messageId: messageId, $"Ваша професія - {user.ProfessionName}", cancellationToken: cancellationToken);
                     }

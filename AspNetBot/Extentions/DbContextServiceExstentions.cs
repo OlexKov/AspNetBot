@@ -15,7 +15,7 @@ namespace AspNetBot.Extentions
                 opts.UseNpgsql(connectionString));
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            services.AddIdentity<BotUser, IdentityRole>(options =>
+            services.AddIdentity<BotUser, IdentityRole<int>>(options =>
             {
                 options.Stores.MaxLengthForKeys = 128;
                 options.Password.RequireDigit = false;

@@ -2,12 +2,12 @@
 
 namespace AspNetBot.Models
 {
-    public class BotUserCreationModel
+    public class UserCreationModel
     {    
-        public string Id { get; set; }
+        public int Id { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
-        public long? UserId { get; set; }
+        public long? ChatId { get; set; }
         public int? ProfessionId { get; set; }
         public string? PhoneNumber { get; set; }
         public IFormFile? ImageFile { get; set; }

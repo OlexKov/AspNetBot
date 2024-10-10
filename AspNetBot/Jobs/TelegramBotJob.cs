@@ -1,6 +1,7 @@
 ﻿using AspNetBot.Extentions.TBotExtensions;
 using AspNetBot.Helpers;
 using AspNetBot.Interafces;
+using AspNetBot.Services;
 using Quartz;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
@@ -8,9 +9,6 @@ using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
-using System.Collections;
-
-
 
 namespace AspNetBot.Jobs
 {
@@ -18,11 +16,12 @@ namespace AspNetBot.Jobs
     {
         public IBotUserService UserService { get; private set; }
         public IProfessionsService ProfessionsService { get; private set; }
+        public IAccountService AccountService { get; private set; }
         public string BotToken { get; private set; }
         private readonly TelegramBotClient client;
-        public TelegramBotJob(IConfiguration config, IBotUserService userService,IProfessionsService professionsService) 
+        public TelegramBotJob(IConfiguration config,IAccountService accountService, IBotUserService userService,IProfessionsService professionsService) 
         {
-
+            AccountService = accountService;
             ProfessionsService = professionsService;
             UserService = userService;
             BotToken = config["TelegramBotToken"]!;
@@ -71,7 +70,7 @@ namespace AspNetBot.Jobs
             return Task.CompletedTask;
         }
 
-        public async Task<bool> IsUserExist(long id) => await UserService.getByChatId(id) != null;
+        public async Task<bool> IsUserExist(long id) => await UserService.GetByChatIdAsync(id) != null;
         public InlineKeyboardButton[][] CreateInlineButtons(Dictionary<string, string> data,int colums)
         { 
             return data.AsParallel().Select(x=> InlineKeyboardButton.WithCallbackData(text: x.Key, callbackData: x.Value))

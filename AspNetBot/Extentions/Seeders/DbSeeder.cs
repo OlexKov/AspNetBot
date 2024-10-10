@@ -13,14 +13,14 @@ namespace AspNetBot.Extentions.Seeders
             using var scope = app.Services.CreateScope();
             var serviceProvider = scope.ServiceProvider;
             //===================================Roles seeder================================================= 
-            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
             if (!roleManager.Roles.Any()) 
             {
                 foreach (var role in Enum.GetNames<Roles>())
                 {
                     if (!await roleManager.RoleExistsAsync(role))
                     {
-                        await roleManager.CreateAsync(new IdentityRole(role));
+                        await roleManager.CreateAsync(new IdentityRole<int>(role));
                     }
                 }
             }

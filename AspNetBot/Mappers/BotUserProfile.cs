@@ -12,9 +12,8 @@ namespace AspNetBot.Mappers
         {
             CreateMap<BotUser, BotUserDto>()
                .ForMember(x => x.ProfessionName, opt => opt.MapFrom(x => x.Profession.Name));
-            CreateMap<BotUserCreationModel, BotUser>()
-                .ForMember(x=>x.Id,opt=>opt.MapFrom(x=>String.IsNullOrEmpty(x.Id)?Guid.NewGuid().ToString():x.Id))
-                .AfterMap<BotUserProfileImageAction>();
+            CreateMap<UserCreationModel, BotUser>()
+               .AfterMap<BotUserProfileImageAction>();
 
         }
     }

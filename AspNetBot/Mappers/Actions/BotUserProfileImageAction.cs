@@ -5,10 +5,10 @@ using AutoMapper;
 
 namespace AspNetBot.Mappers.Actions
 {
-    public class BotUserProfileImageAction(IImageService imageService) : IMappingAction<BotUserCreationModel, BotUser>
+    public class BotUserProfileImageAction(IImageService imageService) : IMappingAction<UserCreationModel, BotUser>
     {
         //private readonly IImageService imageService = imageService;
-        public async void Process(BotUserCreationModel source, BotUser destination, ResolutionContext context)
+        public async void Process(UserCreationModel source, BotUser destination, ResolutionContext context)
         {
             if (source.ImageFile is not null)
             {
