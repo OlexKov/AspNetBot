@@ -1,7 +1,6 @@
 ﻿using AspNetBot.Jobs;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.ReplyMarkups;
 
 namespace AspNetBot.Extentions.TBotExtensions
 {
