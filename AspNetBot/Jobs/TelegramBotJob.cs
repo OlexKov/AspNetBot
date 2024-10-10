@@ -7,6 +7,8 @@ using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
+using System.Collections;
 
 
 
@@ -70,6 +72,13 @@ namespace AspNetBot.Jobs
         }
 
         public async Task<bool> IsUserExist(long id) => await UserService.getByChatId(id) != null;
-
+        public InlineKeyboardButton[][] CreateInlineButtons(Dictionary<string, string> data,int colums)
+        { 
+            return data.AsParallel().Select(x=> InlineKeyboardButton.WithCallbackData(text: x.Key, callbackData: x.Value))
+                       .Select((button, index) => new { Button = button, Index = index })
+                       .GroupBy(x => x.Index / colums)
+                       .Select(g => g.Select(x => x.Button).ToArray())
+                       .ToArray();
+        }
     }
 }

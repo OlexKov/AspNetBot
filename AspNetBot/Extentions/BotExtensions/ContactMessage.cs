@@ -44,12 +44,7 @@ namespace AspNetBot.Extentions.TBotExtensions
                     //    messageId: message.MessageId, 
                     //    replyMarkup: new  ReplyKeyboardRemove(), 
                     //    cancellationToken: cancellationToken);
-                    var inlineButtons = professions
-                        .Select(x => InlineKeyboardButton.WithCallbackData(text: x.Name, callbackData: x.Id.ToString()))
-                        .Select((button, index) => new { Button = button, Index = index })
-                        .GroupBy(x => x.Index / 3)
-                        .Select(g => g.Select(x => x.Button).ToArray())
-                        .ToArray();
+                    var inlineButtons = bot.CreateInlineButtons(professions.ToDictionary(item => item.Name, Item => Item.Id.ToString()), 3);
                     var inlineKeyboard = new InlineKeyboardMarkup(inlineButtons);
                     await botClient.SendTextMessageAsync(
                                 chatId,
