@@ -12,5 +12,6 @@ namespace AspNetBot.DTO
         public int ProfessionId { get; set; }
         public string? ProfessionName { get; set; } = string.Empty;
         public string? Image { get; set; } = string.Empty;
+        public string? UserName { get; set; } = string.Empty;
     }
 }

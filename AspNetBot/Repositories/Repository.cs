@@ -63,5 +63,6 @@ namespace AspNetBot.Repositories
             return evaluator.GetQuery(dbSet, specification);
         }
         public async Task<int> CountAsync(Expression<Func<TEntity, bool>> exp) => await dbSet.CountAsync(exp);
+        public async Task<int> CountAsync() => await dbSet.CountAsync();
     }
 }

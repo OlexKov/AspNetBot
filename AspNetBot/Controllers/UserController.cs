@@ -21,11 +21,14 @@ namespace AspNetBot.Controllers
         [HttpGet("get")]
         public async Task<IActionResult> GetAll() => Ok(await botUserService.GetAllAsync());
 
-        [HttpGet("get/proffid/{proffId:int}")]
-        public async Task<IActionResult> GetByProfessionId([FromRoute] int proffId) => Ok(await botUserService.GetAllByProfessionAsync(proffId));
+        [HttpGet("get/{page:int}/{size:int}")]
+        public  IActionResult GetPagination([FromRoute] int size,int page) => Ok( botUserService.GetPagination(page,size));
 
-        [HttpGet("get/proffname/{proffName}")]
-        public async Task<IActionResult> GetByProfessionName([FromRoute] string proffName) => Ok(await botUserService.GetAllByProfessionAsync(proffName));
+        [HttpGet("get/profid/{profId:int}")]
+        public async Task<IActionResult> GetByProfessionId([FromRoute] int profId) => Ok(await botUserService.GetAllByProfessionAsync(profId));
+
+        [HttpGet("get/profname/{proffName}")]
+        public async Task<IActionResult> GetByProfessionName([FromRoute] string profName) => Ok(await botUserService.GetAllByProfessionAsync(profName));
 
         [HttpGet("get/chat/{chatId:long}")]
         public async Task<IActionResult> GetByChatId([FromRoute] long chatId) => Ok(await botUserService.GetByChatIdAsync(chatId));
@@ -33,8 +36,8 @@ namespace AspNetBot.Controllers
         [HttpGet("get/{userId:int}")]
         public async Task<IActionResult> GetById([FromRoute] int userId) => Ok(await botUserService.GetByIdAsync(userId));
 
-        [HttpPost("set/{proffId:int}/{chatId:long}")]
-        public async Task<IActionResult> SetUserProfession([FromRoute] int proffId, long chatId) => Ok(await botUserService.SetUserProfessionAsync(chatId,proffId));
+        [HttpPost("set/{profId:int}/{chatId:long}")]
+        public async Task<IActionResult> SetUserProfession([FromRoute] int profId, long chatId) => Ok(await botUserService.SetUserProfessionAsync(chatId,profId));
               
         [HttpDelete("delete/{chatId:int}")]
         public async Task<IActionResult> DeleteById([FromRoute] int chatId)

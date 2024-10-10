@@ -3,12 +3,10 @@ using AspNetBot.Entities;
 using AspNetBot.Exceptions;
 using AspNetBot.Helpers;
 using AspNetBot.Interafces;
-using AspNetBot.Models;
 using AspNetBot.Specifications;
 using AutoMapper;
-using Microsoft.AspNetCore.Identity;
 using System.Net;
-using Telegram.Bot.Types;
+
 
 namespace AspNetBot.Services
 {
@@ -44,6 +42,9 @@ namespace AspNetBot.Services
         public async Task<BotUserDto> GetByChatIdAsync(long botUserChatId,bool tracking)  => mapper.Map<BotUserDto>(await userRepo.GetItemBySpec( new BotUserSpecs.GetById(botUserChatId, tracking)));
 
         public  async Task<BotUserDto> GetByIdAsync(int botUserId, bool tracking) => mapper.Map<BotUserDto>(await userRepo.GetItemBySpec(new BotUserSpecs.GetById(botUserId, tracking)));
+
+        public PaginationResult<BotUserDto, BotUser> GetPagination(int page, int size) => new(userRepo,mapper,page,size);
+        
 
         public async Task<BotUserDto> SetUserProfessionAsync(long chatId, int professionId)
         {

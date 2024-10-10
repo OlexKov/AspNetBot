@@ -27,6 +27,7 @@ namespace AspNetBot.Services
                 new (ClaimTypes.Name, user.FirstName??""),
                 new (ClaimTypes.MobilePhone, user.PhoneNumber??""),
                 new (ClaimTypes.Email, user.Email ?? ""),
+                new (ClaimTypes.Anonymous, user.Image ?? ""),
             };
             var roles = await userManager.GetRolesAsync(user);
             claims.AddRange(roles.Select(role => new Claim(ClaimsIdentity.DefaultRoleClaimType, role)));
