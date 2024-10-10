@@ -1,6 +1,7 @@
 ﻿using AspNetBot.Jobs;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace AspNetBot.Extentions.TBotExtensions
 {
@@ -18,8 +19,7 @@ namespace AspNetBot.Extentions.TBotExtensions
                     {
                         int messageId = callbackQuery.Message.MessageId;
                         var user = await bot.UserService.SetUserProfessionAsync(chatId, professionId);
-                        await botClient.EditMessageReplyMarkupAsync(chatId: chatId, messageId: messageId, replyMarkup: null, cancellationToken: cancellationToken);
-                        await botClient.EditMessageTextAsync(chatId: chatId, messageId: messageId, $"Дякую,ваша професія: {user.ProfessionName}", cancellationToken: cancellationToken);
+                        await botClient.EditMessageTextAsync(chatId: chatId, messageId: messageId, $"Дякую,ваша професія: {user.ProfessionName}", replyMarkup: null, cancellationToken: cancellationToken);
                     }
                 }
                 else

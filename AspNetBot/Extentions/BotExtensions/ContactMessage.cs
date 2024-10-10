@@ -40,7 +40,6 @@ namespace AspNetBot.Extentions.TBotExtensions
                         };
                         await bot.AccountService.SetAsync(newBotUser);
                         var professions = await bot.ProfessionsService.GetAllAsync(false);
-
                         await botClient.SendTextMessageAsync(chatId: message.Chat.Id, text: $"Дякую, ваш номер: {phoneNumber}", replyMarkup: new ReplyKeyboardRemove(), cancellationToken: cancellationToken);
                         var inlineButtons = bot.CreateInlineButtons(professions.ToDictionary(item => item.Name, Item => Item.Id.ToString()), 3);
                         var inlineKeyboard = new InlineKeyboardMarkup(inlineButtons);
