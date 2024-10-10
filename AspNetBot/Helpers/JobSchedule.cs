@@ -6,13 +6,17 @@
         public string JobIdentity { get; }
         public string TriggerIdentity { get; }
         public string CronExpression { get; }
+        public string ProfessionName { get; }
+        public string Message { get; }
 
-        public JobSchedule(Type jobType, string jobIdentity, string triggerIdentity, string cronExpression)
+        public JobSchedule(Type jobType, string professonName,string message, string jobIdentity, string triggerIdentity, string cronExpression)
         {
             JobType = jobType;
             JobIdentity = jobIdentity;
             TriggerIdentity = triggerIdentity;
             CronExpression = cronExpression;
+            ProfessionName = professonName;
+            Message = message;
         }
     }
 }

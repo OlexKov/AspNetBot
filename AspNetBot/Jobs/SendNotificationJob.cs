@@ -4,12 +4,12 @@ using Telegram.Bot;
 
 namespace AspNetBot.Jobs
 {
-    public class SendTeachersDayNotificationJob : IJob
+    public class SendNotificationJob : IJob
     {
         private readonly IBotUserService userService;
         private readonly ITelegramBotClient client;
 
-        public SendTeachersDayNotificationJob(IBotUserService userService, IConfiguration config)
+        public SendNotificationJob(IBotUserService userService, IConfiguration config)
         {
             this.userService = userService;
             this.client = new TelegramBotClient(config["TelegramBotToken"]!);
@@ -17,10 +17,13 @@ namespace AspNetBot.Jobs
 
         public async Task Execute(IJobExecutionContext context)
         {
-            var users = await userService.getAllByProfession("Вчитель");
+            var dataMap = context.JobDetail.JobDataMap;
+            var profession = dataMap.GetString("profession");
+            var message = dataMap.GetString("message");
+            var users = await userService.getAllByProfession(profession);
             foreach (var user in users.AsParallel())
             {
-                await client.SendTextMessageAsync(user.UserId, $"{user.FirstName} {user.LastName} наша команда щиро вітає вас з Днем Вчителя та бажає всього найкращого !!!!");
+                await client.SendTextMessageAsync(user.UserId, $"{user.FirstName} {user.LastName} {message}");
             }
         }
     }
