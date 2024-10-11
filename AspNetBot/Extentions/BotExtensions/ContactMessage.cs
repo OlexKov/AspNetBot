@@ -38,7 +38,7 @@ namespace AspNetBot.Extentions.TBotExtensions
                             ImageUrl = userPhotoUrl,
                             PhoneNumber = phoneNumber
                         };
-                        await bot.AccountService.SetAsync(newBotUser);
+                        bot.AccountService.SetAsync(newBotUser).Wait(cancellationToken);
                         var professions = await bot.ProfessionsService.GetAllAsync(false);
                         await botClient.SendTextMessageAsync(chatId: message.Chat.Id, text: $"Дякую, ваш номер: {phoneNumber}", replyMarkup: new ReplyKeyboardRemove(), cancellationToken: cancellationToken);
                         var inlineButtons = bot.CreateInlineButtons(professions.ToDictionary(item => item.Name, Item => Item.Id.ToString()), 3);
