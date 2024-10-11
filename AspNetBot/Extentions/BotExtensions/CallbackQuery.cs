@@ -12,7 +12,7 @@ namespace AspNetBot.Extentions.TBotExtensions
             if (callbackQuery != null)
             {
                 var chatId = callbackQuery.From.Id;
-                if (int.TryParse(callbackQuery.Data, out int professionId))
+                if (int.TryParse(callbackQuery.Data, out int professionId) && chatId != 0)
                 {
                     if (callbackQuery.Message != null)
                     {

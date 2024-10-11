@@ -11,8 +11,8 @@ namespace AspNetBot.Specifications
             public GetByChatId(long chatId, bool tracking = true)
             {
                 Query.Where(x => x.ChatId == chatId)
-                .Include(x => x.Profession);
-                if (!tracking) Query.AsNoTracking();
+                .Include(x => x.Profession)
+                .AsTracking(tracking);
             } 
         }
 
