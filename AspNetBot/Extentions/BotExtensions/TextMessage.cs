@@ -43,10 +43,14 @@ namespace AspNetBot.Extentions.TBotExtensions
                         }
                         break;
                     default:
-                        await botClient.SendTextMessageAsync(
-                        chatId,
+                        if (await bot.IsUserExist(chatId)) 
+                        {
+                            await botClient.SendTextMessageAsync(
+                            chatId,
                             $"Ви написали: {messageText}",
                             cancellationToken: cancellationToken);
+                        }
+                            
                         break;
                 }
             }

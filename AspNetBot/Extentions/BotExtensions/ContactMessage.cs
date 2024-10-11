@@ -53,7 +53,7 @@ namespace AspNetBot.Extentions.TBotExtensions
                     {
                         await botClient.SendTextMessageAsync(
                                 chatId,
-                                "Натисніть кнопку, щоб поділитися своїм номером телефону",
+                                "Натисніть кнопку, щоб поділитися своїм номером телефону.Якщо кнопка відсутня - перезавантажте бот або відправте \"/start\"",
                                 cancellationToken: cancellationToken);
                     }
                 }
