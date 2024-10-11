@@ -13,12 +13,14 @@ namespace AspNetBot.Services
     public class BotUserService : IBotUserService
     {
         private readonly IRepository<BotUser> userRepo;
+        private readonly IImageService imageService;
         private readonly IMapper mapper;
 
-        public BotUserService(IMapper mapper, IRepository<BotUser> userRepo)
+        public BotUserService(IMapper mapper, IRepository<BotUser> userRepo,IImageService imageService)
         {
             this.mapper = mapper;
             this.userRepo = userRepo;
+            this.imageService = imageService;
         }
       
 
@@ -28,6 +30,8 @@ namespace AspNetBot.Services
                 throw new HttpException("Invalid user chat id",HttpStatusCode.BadRequest) ;
             await userRepo.DeleteAsync(user);
             await userRepo.SaveAsync();
+            if(!String.IsNullOrEmpty(user.Image))
+                imageService.DeleteImage(user.Image);
         }
 
       
