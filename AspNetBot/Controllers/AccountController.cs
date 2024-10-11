@@ -14,12 +14,10 @@ namespace AspNetBot.Controllers
     public class AccountController : ControllerBase
     {
         public readonly IAccountService accountService;
-        private readonly IBotUserService botUserService;
-
-        public AccountController(IAccountService accountService, IBotUserService botUserService)
+        
+        public AccountController(IAccountService accountService)
         {
             this.accountService = accountService;
-            this.botUserService = botUserService;
         }
 
         [AllowAnonymous]
@@ -44,13 +42,6 @@ namespace AspNetBot.Controllers
         public async Task<IActionResult> DeleteById([FromRoute]int userId)
         {
             await accountService.DeleteAsync(userId);
-            return Ok();
-        }
-
-        [HttpDelete("delete")]
-        public async Task<IActionResult> DeleteByChatId([FromQuery] long chatId)
-        {
-            await botUserService.DeleteAsync(chatId);
             return Ok();
         }
     }
