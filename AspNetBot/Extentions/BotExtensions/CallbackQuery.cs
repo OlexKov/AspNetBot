@@ -20,7 +20,7 @@ namespace AspNetBot.Extentions.TBotExtensions
                         int messageId = callbackQuery.Message.MessageId;
                         try
                         {
-                            var user = await bot.UserService.SetUserProfessionAsync(chatId, professionId);
+                            var user = bot.UserService.SetUserProfessionAsync(chatId, professionId).Result;
                             await botClient.EditMessageTextAsync(chatId: chatId, messageId: messageId, $"Дякую,ваша професія: {user.ProfessionName}", replyMarkup: null, cancellationToken: cancellationToken);
                         }
                         catch (Exception ex)
