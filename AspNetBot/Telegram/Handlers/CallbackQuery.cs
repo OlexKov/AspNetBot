@@ -1,13 +1,12 @@
 ﻿using AspNetBot.Helpers;
-using AspNetBot.Jobs;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace AspNetBot.Extentions.TBotExtensions
+namespace AspNetBot.Telegram
 {
-    public static class CallbackQuery
+    public partial class TelegramBot
     {
-        public static async Task CallbackQueryHandler(this TelegramBotJob bot, Update update, ITelegramBotClient botClient, CancellationToken cancellationToken)
+        public async Task CallbackQueryHandler(Update update, ITelegramBotClient botClient, CancellationToken cancellationToken)
         {
             var callbackQuery = update.CallbackQuery;
             if (callbackQuery != null)
@@ -20,12 +19,12 @@ namespace AspNetBot.Extentions.TBotExtensions
                         int messageId = callbackQuery.Message.MessageId;
                         try
                         {
-                            var user = bot.UserService.SetUserProfessionAsync(chatId, professionId).Result;
+                            var user = userService.SetUserProfessionAsync(chatId, professionId).Result;
                             await botClient.EditMessageTextAsync(chatId: chatId, messageId: messageId, $"Дякую,ваша професія: {user.ProfessionName}", replyMarkup: null, cancellationToken: cancellationToken);
                         }
                         catch (Exception ex)
                         {
-                            DebugConsole.WriteLine(ex.Message,ConsoleColor.Red);
+                            DebugConsole.WriteLine(ex.Message, ConsoleColor.Red);
                         }
                     }
                 }

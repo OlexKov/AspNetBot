@@ -2,13 +2,12 @@
 using Telegram.Bot.Types.ReplyMarkups;
 using Telegram.Bot.Types;
 using Telegram.Bot;
-using AspNetBot.Jobs;
 
-namespace AspNetBot.Extentions.TBotExtensions
+namespace AspNetBot.Telegram
 {
-    public static class TextMessage
+    public partial class TelegramBot
     {
-        public static async Task TextMessageHandler(this TelegramBotJob bot, Message message, ITelegramBotClient botClient, CancellationToken cancellationToken)
+        public async Task TextMessageHandler( Message message, ITelegramBotClient botClient, CancellationToken cancellationToken)
         {
             var chatId = message.Chat.Id;
             DebugConsole.Write("Bot", ConsoleColor.Green);
@@ -19,7 +18,7 @@ namespace AspNetBot.Extentions.TBotExtensions
                 switch (messageText)
                 {
                     case "/start":
-                        if (!await bot.IsUserExist(chatId))
+                        if (!await IsUserExist(chatId))
                         {
                             var shareContactButton = new KeyboardButton("Поділитися номером телефону") { RequestContact = true };
 
@@ -43,14 +42,14 @@ namespace AspNetBot.Extentions.TBotExtensions
                         }
                         break;
                     default:
-                        if (await bot.IsUserExist(chatId)) 
+                        if (await IsUserExist(chatId))
                         {
                             await botClient.SendTextMessageAsync(
                             chatId,
                             $"Ви написали: {messageText}",
                             cancellationToken: cancellationToken);
                         }
-                            
+
                         break;
                 }
             }

@@ -2,18 +2,18 @@
 using Telegram.Bot;
 using AspNetBot.Models;
 using Telegram.Bot.Types.ReplyMarkups;
-using AspNetBot.Jobs;
 
-namespace AspNetBot.Extentions.TBotExtensions
+
+namespace AspNetBot.Telegram
 {
-    public static class ContactMessage
+    public partial class TelegramBot
     {
-        public static async Task ContactMessageHandler(this TelegramBotJob bot, Message message, ITelegramBotClient botClient, CancellationToken cancellationToken)
+        public async Task ContactMessageHandler( Message message, ITelegramBotClient botClient, CancellationToken cancellationToken)
         {
             if (message.Contact is not null)
             {
                 var chatId = message.Chat.Id;
-                if (!await bot.IsUserExist(chatId))
+                if (!await IsUserExist(chatId))
                 {
                     var contact = message.Contact;
                     if (contact.Vcard == null)
@@ -27,7 +27,7 @@ namespace AspNetBot.Extentions.TBotExtensions
                         {
                             var fileId = userPhotos.Photos[0][^1].FileId;
                             var file = await botClient.GetFileAsync(fileId, cancellationToken: cancellationToken);
-                            userPhotoUrl = $"https://api.telegram.org/file/bot{bot.BotToken}/{file.FilePath}";
+                            userPhotoUrl = $"https://api.telegram.org/file/bot{botToken}/{file.FilePath}";
                         }
                         var newBotUser = new UserCreationModel()
                         {
@@ -38,10 +38,10 @@ namespace AspNetBot.Extentions.TBotExtensions
                             ImageUrl = userPhotoUrl,
                             PhoneNumber = phoneNumber
                         };
-                        bot.AccountService.SetAsync(newBotUser).Wait(cancellationToken);
-                        var professions = await bot.ProfessionsService.GetAllAsync(false);
+                        accountService.SetAsync(newBotUser).Wait(cancellationToken);
+                        var professions = await professionsService.GetAllAsync(false);
                         await botClient.SendTextMessageAsync(chatId: message.Chat.Id, text: $"Дякую, ваш номер: {phoneNumber}", replyMarkup: new ReplyKeyboardRemove(), cancellationToken: cancellationToken);
-                        var inlineButtons = bot.CreateInlineButtons(professions.ToDictionary(item => item.Name, Item => Item.Id.ToString()), 3);
+                        var inlineButtons = CreateInlineButtons(professions.ToDictionary(item => item.Name, Item => Item.Id.ToString()), 3);
                         var inlineKeyboard = new InlineKeyboardMarkup(inlineButtons);
                         await botClient.SendTextMessageAsync(
                                     chatId,
@@ -57,7 +57,7 @@ namespace AspNetBot.Extentions.TBotExtensions
                                 cancellationToken: cancellationToken);
                     }
                 }
-                else 
+                else
                 {
                     await botClient.SendTextMessageAsync(
                                 chatId,

@@ -1,31 +1,28 @@
-﻿using AspNetBot.Extentions.TBotExtensions;
-using AspNetBot.Helpers;
+﻿using AspNetBot.Helpers;
 using AspNetBot.Interafces;
-using AspNetBot.Services;
 using Quartz;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.ReplyMarkups;
 
-namespace AspNetBot.Jobs
+namespace AspNetBot.Telegram
 {
-    public class TelegramBotJob : IJob
+    public partial class TelegramBot : IJob
     {
-        public IBotUserService UserService { get; private set; }
-        public IProfessionsService ProfessionsService { get; private set; }
-        public IAccountService AccountService { get; private set; }
-        public string BotToken { get; private set; }
+        private readonly IBotUserService userService;
+        private readonly IProfessionsService professionsService;
+        private readonly IAccountService accountService;
+        private readonly string botToken;
         private readonly TelegramBotClient client;
-        public TelegramBotJob(IConfiguration config,IAccountService accountService, IBotUserService userService,IProfessionsService professionsService) 
+        public TelegramBot(IConfiguration config,IAccountService accountService, IBotUserService userService,IProfessionsService professionsService) 
         {
-            AccountService = accountService;
-            ProfessionsService = professionsService;
-            UserService = userService;
-            BotToken = config["TelegramBotToken"]!;
-            client = new TelegramBotClient(BotToken);
+            this.accountService = accountService;
+            this.professionsService = professionsService;
+            this.userService = userService;
+            botToken = config["TelegramBotToken"]!;
+            client = new TelegramBotClient(botToken);
         }
         public async Task Execute(IJobExecutionContext context)
         {
@@ -41,16 +38,16 @@ namespace AspNetBot.Jobs
         private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             var message = update.Message;
-            await this.CallbackQueryHandler( update, botClient, cancellationToken);
+            await CallbackQueryHandler( update, botClient, cancellationToken);
             if (message is not null)
             {
                 switch (message.Type)
                 {
                     case MessageType.Text:
-                        await  this.TextMessageHandler(message,botClient,cancellationToken);
+                        await TextMessageHandler(message,botClient,cancellationToken);
                         break;
                     case MessageType.Contact:
-                        await this.ContactMessageHandler(message, botClient, cancellationToken);
+                        await ContactMessageHandler(message, botClient, cancellationToken);
                         break;
                     default:
                         break;
@@ -69,15 +66,6 @@ namespace AspNetBot.Jobs
             DebugConsole.WriteLine(errorMessage, ConsoleColor.Red);
             return Task.CompletedTask;
         }
-
-        public async Task<bool> IsUserExist(long id) => await UserService.GetByChatIdAsync(id) != null;
-        public InlineKeyboardButton[][] CreateInlineButtons(Dictionary<string, string> data,int colums)
-        { 
-            return data.AsParallel().Select(x=> InlineKeyboardButton.WithCallbackData(text: x.Key, callbackData: x.Value))
-                       .Select((button, index) => new { Button = button, Index = index })
-                       .GroupBy(x => x.Index / colums)
-                       .Select(g => g.Select(x => x.Button).ToArray())
-                       .ToArray();
-        }
+        
     }
 }

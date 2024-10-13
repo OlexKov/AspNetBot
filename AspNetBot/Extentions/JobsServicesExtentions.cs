@@ -1,5 +1,6 @@
 ﻿using AspNetBot.Helpers;
 using AspNetBot.Jobs;
+using AspNetBot.Telegram;
 using Quartz;
 
 namespace AspNetBot.Extentions
@@ -67,7 +68,7 @@ namespace AspNetBot.Extentions
                 q.UseInMemoryStore();
 
 
-                q.AddJob<TelegramBotJob>(opts => opts.WithIdentity("TelegramBotJob"));
+                q.AddJob<TelegramBot>(opts => opts.WithIdentity("TelegramBotJob"));
                 q.AddTrigger(opts => opts
                     .ForJob("TelegramBotJob")
                     .WithIdentity("TelegramBotJobTrigger")
