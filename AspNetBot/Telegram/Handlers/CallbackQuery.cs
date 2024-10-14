@@ -19,7 +19,7 @@ namespace AspNetBot.Telegram
                         int messageId = callbackQuery.Message.MessageId;
                         try
                         {
-                            var user = userService.SetUserProfessionAsync(chatId, professionId).Result;
+                            var user = await userService.SetUserProfessionAsync(chatId, professionId);
                             await botClient.EditMessageTextAsync(chatId: chatId, messageId: messageId, $"Дякую,ваша професія: {user.ProfessionName}", replyMarkup: null, cancellationToken: cancellationToken);
                         }
                         catch (Exception ex)

@@ -38,16 +38,18 @@ namespace AspNetBot.Telegram
                             ImageUrl = userPhotoUrl,
                             PhoneNumber = phoneNumber
                         };
+                        
+                        var messageTask = botClient.SendTextMessageAsync(chatId: message.Chat.Id, text: $"Дякую, ваш номер: {phoneNumber}", replyMarkup: new ReplyKeyboardRemove(), cancellationToken: cancellationToken);
                         accountService.SetAsync(newBotUser).Wait(cancellationToken);
                         var professions = await professionsService.GetAllAsync(false);
-                        await botClient.SendTextMessageAsync(chatId: message.Chat.Id, text: $"Дякую, ваш номер: {phoneNumber}", replyMarkup: new ReplyKeyboardRemove(), cancellationToken: cancellationToken);
                         var inlineButtons = CreateInlineButtons(professions.ToDictionary(item => item.Name, Item => Item.Id.ToString()), 3);
                         var inlineKeyboard = new InlineKeyboardMarkup(inlineButtons);
-                        await botClient.SendTextMessageAsync(
+                        var messageTask2 =  botClient.SendTextMessageAsync(
                                     chatId,
                                     "Оберіть професію",
                                     replyMarkup: inlineKeyboard,
                                     cancellationToken: cancellationToken);
+                        await Task.WhenAll(messageTask, messageTask2);
                     }
                     else
                     {

@@ -1,11 +1,11 @@
 ﻿using AspNetBot.Exceptions;
 using AspNetBot.Interafces;
-using AutoMapper;
 using System.Net;
-using AspNetBot.Entities;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Formats.Webp;
+
+
 
 namespace AspNetBot.Services
 {
@@ -28,28 +28,13 @@ namespace AspNetBot.Services
         {
             using MemoryStream ms = new();
             await image.CopyToAsync(ms);
-            string fileName = await SaveImageAsync(ms.ToArray());
-            return fileName;
+            return await SaveImageAsync(ms.ToArray());
         }
 
         public async Task<List<string>> SaveImagesAsync(IEnumerable<IFormFile> images)
         {
-            List<string> result = [];
-
-            try
-            {
-                foreach (var image in images)
-                {
-                    result.Add(await SaveImageAsync(image));
-                }
-            }
-            catch (Exception)
-            {
-                result.ForEach(DeleteImageIfExists);
-                throw new HttpException("Error image save", HttpStatusCode.InternalServerError);
-            }
-
-            return result;
+            var resultTasks = images.AsParallel().Select(x => SaveImageAsync(x));
+            return [.. (await Task.WhenAll(resultTasks.ToArray()))];
         }
 
         public async Task<string> SaveImageAsync(string base64)
@@ -75,6 +60,7 @@ namespace AspNetBot.Services
             string imageName = $"{Path.GetRandomFileName()}.webp";
 
             var tasks = sizes
+                .AsParallel()
                 .Select(s => SaveImageAsync(bytes, imageName, s))
                 .ToArray();
 
@@ -87,7 +73,8 @@ namespace AspNetBot.Services
         {
             string dirSaveImage = Path.Combine(imgPath, $"{size}_{name}");
 
-            using (var image = Image.Load(bytes))
+            using var image = Image.Load(bytes);
+            try
             {
                 image.Mutate(imageProcessingContext =>
                 {
@@ -101,26 +88,17 @@ namespace AspNetBot.Services
                 using var stream = File.Create(dirSaveImage);
                 await image.SaveAsync(stream, new WebpEncoder());
             }
+            catch (Exception)
+            {
+                DeleteImageIfExists(dirSaveImage);
+                throw new HttpException("Error image save", HttpStatusCode.InternalServerError);
+            }
         }
 
         public async Task<List<string>> SaveImagesAsync(IEnumerable<byte[]> bytesArrays)
         {
-            List<string> result = [];
-
-            try
-            {
-                foreach (var bytes in bytesArrays)
-                {
-                    result.Add(await SaveImageAsync(bytes));
-                }
-            }
-            catch (Exception)
-            {
-                result.ForEach(DeleteImageIfExists);
-                throw new HttpException("Error image save", HttpStatusCode.InternalServerError);
-            }
-
-            return result;
+            var resultTasks = bytesArrays.AsParallel().Select(x=> SaveImageAsync(x));
+            return [.. (await Task.WhenAll(resultTasks.ToArray()))];
         }
 
         public async Task<byte[]> LoadBytesAsync(string name)
@@ -128,31 +106,20 @@ namespace AspNetBot.Services
             return await File.ReadAllBytesAsync(Path.Combine(imgPath, name));
         }
 
+        public void DeleteImage(string nameWithFormat) => Sizes.AsParallel().ForAll(x=> File.Delete(Path.Combine(imgPath, $"{x}_{nameWithFormat}")));
 
-        public void DeleteImage(string nameWithFormat)
-        {
-            foreach (var size in Sizes)
-            {
-                File.Delete(Path.Combine(imgPath, $"{size}_{nameWithFormat}"));
-            }
-        }
-
-        public void DeleteImages(IEnumerable<string> images)
-        {
-            foreach (var image in images)
-                DeleteImage(image);
-        }
-
+        public void DeleteImages(IEnumerable<string> images) => images.AsParallel().ForAll(x => DeleteImage(x));
+        
         public void DeleteImageIfExists(string nameWithFormat)
         {
-            foreach (var size in Sizes)
+            Sizes.AsParallel().ForAll(x => 
             {
-                var path = Path.Combine(imgPath, $"{size}_{nameWithFormat}");
+                var path = Path.Combine(imgPath, $"{x}_{nameWithFormat}");
                 if (File.Exists(path))
                 {
                     File.Delete(path);
                 }
-            }
+            });
         }
 
         public void DeleteImagesIfExists(IEnumerable<string> images)
